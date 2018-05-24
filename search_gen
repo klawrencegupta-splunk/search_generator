@@ -1,0 +1,55 @@
+#Kate Lawrence-Gupta
+#Search_load.py - script to generate search load for Splunk performance testing
+
+
+# Import needed modules
+import string
+import random
+import re
+import subprocess
+
+
+# Declare some needed variables
+#search_file = "/opt/splunk/etc/system/local/search_file"
+#search_file = "/Users/klawrencegupta/Desktop/search_file"
+search_file = "/home/klg/search_file"
+search_cmd = "/opt/splunk/bin/./splunk search "
+auth = " -auth admin:changeme"
+detach = " -detach true"
+preview = " -preview false"
+maxout = " -maxout 0"
+
+search_append = str(auth + detach + preview + maxout)
+
+#How many searches to launch in each batch
+search_rate = 4
+
+# search command wrapper to run that randomizes over both time & content
+# Takes the following parameters - normal, sparse, supersparse, dense, rare
+
+
+def get_searches(search_file):
+    search_var = re.search("(\w+)+\s\=\s\[(.+.)\]", i)
+    if search_var is not None:
+            search_type = str(search_var.group(1))
+            search2run = str(search_var.group(2))
+            return search_type, search2run
+
+def search_runner(search2run,search_cmd,search_append):
+        search = search_cmd + search2run + search_append
+        searches = subprocess.Popen(search,bufsize=1024,shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        return_code = searches.wait()
+        return search
+
+# Main function
+        #searches = subprocess.Popen(search_cmd,bufsize=1024,shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        #return_code = searches.wait()
+
+
+if __name__ == "__main__":
+    search_file = open(search_file).readlines()
+    for i in search_file:
+        search_type, search2run = get_searches(search_file)
+        for s in range(1, search_rate):
+            search = search_runner(search2run, search_cmd, search_append)
+            print "search_type=" + search_type + '\t' +  "search_syntax=" + search2run

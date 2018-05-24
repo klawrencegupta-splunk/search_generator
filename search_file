@@ -1,0 +1,3 @@
+normal = ["earliest=-24h@h "INFO" index=_internal | stats count"]
+sparse = ["earliest=-24h@h "WARN" index=_internal | stats count"]
+dense = ["earliest=-24h@h "ERROR" index=_internal | stats count"]
