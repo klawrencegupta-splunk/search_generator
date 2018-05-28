@@ -1,3 +1,5 @@
+This application/script is provided at your own risk & is not a Splunk supported product. It is only meant for testing & is considered experimental
+
 # search_generator
 A generic Splunk search generator
 
